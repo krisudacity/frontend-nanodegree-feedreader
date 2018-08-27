@@ -6,7 +6,7 @@
  * jQuery.
  */
 
-// The names and URLs to all of the feeds we'd like available.
+// an array of all the feed objects containing a name and url property.
 var allFeeds = [
     {
         name: 'Udacity Blog',
@@ -23,13 +23,8 @@ var allFeeds = [
     }
 ];
 
-/* This function starts up our application. The Google Feed
- * Reader API is loaded asynchonously and will then call this
- * function when the API is loaded.
- */
-function init() {
-    // Load the first feed we've defined (index of 0).
-    loadFeed(0);
+function init() { // init function...
+    loadFeed(0); // calls the loadFeed function,  passing in an argument of an index to access the first object in the allFeeds array.
 }
 
 /* This function performs everything necessary to load a
@@ -40,7 +35,7 @@ function init() {
  * This function all supports a callback as the second parameter
  * which will be called after everything has run successfully.
  */
- function loadFeed(id, cb) {
+ function loadFeed(id, cb) { // takes in id and callback
      var feedUrl = allFeeds[id].url,
          feedName = allFeeds[id].name;
 
@@ -49,7 +44,7 @@ function init() {
        url: 'https://rsstojson.udacity.com/parseFeed',
        data: JSON.stringify({url: feedUrl}),
        contentType:"application/json",
-       success: function (result, status){
+       success: function (result, status){ // when ajax call is successful, call a function
 
                  var container = $('.feed'),
                      title = $('.header-title'),
@@ -60,12 +55,12 @@ function init() {
                  title.html(feedName);   // Set the header text
                  container.empty();      // Empty out all previous entries
 
-                 /* Loop through the entries we just loaded via the Google
-                  * Feed Reader API. We'll then parse that entry against the
-                  * entryTemplate (created above using Handlebars) and append
-                  * the resulting HTML to the list of entries on the page.
+                 /* for each entry inside the “entries” array of the result object,
+                  * we append to the feed container with a feed item
+                  * from the Handlebars entryTemplate.
+                  * If there's a callback (cb), call it.
                   */
-                 entries.forEach(function(entry) {
+                 entries.forEach(function(entry) { //
                      container.append(entryTemplate(entry));
                  });
 
@@ -83,10 +78,7 @@ function init() {
      });
  }
 
-/* Google API: Loads the Feed Reader API and defines what function
- * to call when the Feed Reader API is done loading.
- */
-google.setOnLoadCallback(init);
+google.setOnLoadCallback(init); // an API method which calls “init” once it finishes loading.
 
 /* All of this functionality is heavily reliant upon the DOM, so we
  * place our code in the $() function to ensure it doesn't execute
