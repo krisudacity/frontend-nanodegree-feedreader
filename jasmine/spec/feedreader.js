@@ -37,7 +37,7 @@ $(function() {
         });
     });
 
-    /* TODO: Write a new test suite named "The menu" */
+    /* A new test suite named "The menu" */
         describe('The menu', function(){
           const body = document.querySelector('body'); // queries body element
           const menu = document.querySelector('.menu-icon-click'); // queries menu-icon-click
@@ -82,8 +82,8 @@ $(function() {
            loadFeed(0, done); // lets Jasmine know our beforeEach function has finished
          });
          it('completes work', function() {
-           const feed = document.querySelector('.feed');
-           expect(feed.children.length > 0).toBe(true);
+           const feed = document.querySelector('.feed .entry'); // looks for entry child of feed element
+           expect(feed.children.length > 0).toBe(true); // .children selector searches through the children of feed element
        });
 });
     /* A new test suite named "New Feed Selection" */
@@ -99,8 +99,8 @@ $(function() {
            loadFeed(0);
            Array.from(feed.children).forEach(function(entry) { // convert feed children elements into an array
              firstFeed.push(entry.innerText); // push the innerText to our firstFeed array
+             loadFeed(1, done); // lets jasmine know our beforeEach function is finished - nested async callbacks
            });
-           loadFeed(1, done); // lets Jasmine know our beforeEach function has finishes
          });
          it('content changes', function() {
            Array.from(feed.children).forEach(function(entry,index) { // convert feed children elements into an array
