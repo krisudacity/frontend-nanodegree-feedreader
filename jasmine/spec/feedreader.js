@@ -49,7 +49,7 @@ $(function() {
          * hiding/showing of the menu element.
          */
          it('is hidden', function() {
-             expect(body.classList.contains('menu-hidden')).toBe(true);
+             $('body').hasClass('menu-hidden'); // see: https://api.jquery.com/hasclass/
          });
 
          /* A test that ensures the menu changes
@@ -82,31 +82,28 @@ $(function() {
            loadFeed(0, done); // lets Jasmine know our beforeEach function has finished
          });
          it('completes work', function() {
-           const feed = document.querySelector('.feed .entry'); // looks for entry child of feed element
-           expect(feed.children.length > 0).toBe(true); // .children selector searches through the children of feed element
+           const feed = document.querySelectorAll('.feed .entry'); // looks for entry child of feed element
+           expect(feed.length > 0).toBe(true); // .children selector searches through the children of feed element
        });
 });
-    /* A new test suite named "New Feed Selection" */
+    /* A new test suite named "New Feed Selection", which ensures that
+     * when a new feed is loaded by the loadFeed function, the content has changed.
+     */
     describe('New feed selection', function(){
-      const feed = document.querySelector('.feed');
-      const firstFeed = []; // stores feed content in empty array variable
+      const feed = document.querySelector('.feed'); // queries feed element
+      let firstFeed, nextFeed; // variables to define changing content
 
-        /* A test that ensures when a new feed is loaded
-         * by the loadFeed function that the content actually changes.
-         * Remember, loadFeed() is asynchronous.
-         */
          beforeEach(function(done) {
-           loadFeed(0);
-           Array.from(feed.children).forEach(function(entry) { // convert feed children elements into an array
-             firstFeed.push(entry.innerText); // push the innerText to our firstFeed array
-             loadFeed(1, done); // lets jasmine know our beforeEach function is finished - nested async callbacks
-           });
-         });
+           loadFeed(0, function() { // feed 0 is loaded
+             firstFeed = $('.feed').html(); // populates the first feed here
+             loadFeed(1, function() { // feed 1 is loaded
+               nextFeed = $('.feed').html(); // populates the next feed here
+               done();
+            });
+          });
+        });
          it('content changes', function() {
-           Array.from(feed.children).forEach(function(entry,index) { // convert feed children elements into an array
-             expect(entry.innerText === firstFeed[index]).toBe(false); // checks that innerText and firstFeed do not match
+           expect(nextFeed).not.toEqual(firstFeed); // if nextFeed is not equal to firstFeed, the content has changed
            });
        });
-});
-
 }());
